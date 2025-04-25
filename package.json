@@ -1,0 +1,27 @@
+{
+  "name": "mission-brief",
+  "private": true,
+  "version": "0.0.1",
+  "description": "42Volta's multi-tenant architecture - Mission Brief Service",
+  "license": "MPL-2.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^20.5.7",
+    "@types/pg": "^8.11.13",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2",
+    "vitest": "^3.1.2"
+  },
+  "dependencies": {
+    "encore.dev": "^1.46.19",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.14.1"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.13.0"
+  }
+}
