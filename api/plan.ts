@@ -1,9 +1,10 @@
 import { api } from "encore.dev/api";
 import * as streams from "stream";
 import * as http from "http";
-import pool from './database';
-import { Plan } from './models';
-import { verifyJWTToken, hasScope, AuthData } from './auth';
+import pool from "../db/database";
+import { Plan } from "../shared/models";
+import { verifyJWTToken, hasScope, AuthData } from "../auth/index";
+import { logAccessAttempt } from "../services/admin-service"; // Thêm import cho hàm ghi log
 
 // Trích xuất yêu cầu HTTP hiện tại
 declare global {
@@ -80,6 +81,17 @@ export const listPlans = api(
             
             // Kiểm tra quyền truy cập
             if (!authData || !hasScope(authData, 'plans:read')) {
+                // Ghi log thất bại
+                logAccessAttempt(
+                    "/plans",
+                    "list plans",
+                    false,
+                    authData?.userID || "unknown",
+                    authData?.workspaceID || "unknown",
+                    "Missing required scope: plans:read",
+                    "plan"
+                );
+                
                 return {
                     plans: [],
                     error: "Access denied: Missing required scope or authentication"
@@ -105,12 +117,34 @@ export const listPlans = api(
                         [limit, offset]
                     );
                     console.log("Admin access - viewing all workspaces data");
+                    
+                    // Ghi log thành công cho admin
+                    logAccessAttempt(
+                        "/plans",
+                        "list all plans (admin)",
+                        true,
+                        authData.userID,
+                        "all",
+                        `Retrieved ${result.rows.length} plans`,
+                        "plan"
+                    );
                 } else {
                     // Người dùng bình thường chỉ xem được dữ liệu trong workspace của họ
                     const workspaceId = authData.workspaceID;
                     result = await client.query(
                         'SELECT * FROM plan WHERE workspace_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3', 
                         [workspaceId, limit, offset]
+                    );
+                    
+                    // Ghi log thành công
+                    logAccessAttempt(
+                        "/plans",
+                        "list plans",
+                        true,
+                        authData.userID,
+                        workspaceId,
+                        `Retrieved ${result.rows.length} plans`,
+                        "plan"
                     );
                 }
                 
@@ -122,6 +156,18 @@ export const listPlans = api(
             }
         } catch (error) {
             console.error('Error fetching plans:', error);
+            
+            // Ghi log lỗi
+            logAccessAttempt(
+                "/plans",
+                "list plans",
+                false,
+                "unknown",
+                "unknown",
+                `Error: ${(error as Error).message}`,
+                "plan"
+            );
+            
             return {
                 plans: [],
                 error: `Error: ${(error as Error).message}`
@@ -154,6 +200,17 @@ export const getPlan = api(
             
             // Kiểm tra quyền truy cập
             if (!authData || !hasScope(authData, 'plans:read')) {
+                // Ghi log thất bại
+                logAccessAttempt(
+                    "/plans/get",
+                    "get plan",
+                    false,
+                    authData?.userID || "unknown",
+                    authData?.workspaceID || "unknown",
+                    "Missing required scope: plans:read",
+                    "plan"
+                );
+                
                 return {
                     plan: null,
                     error: "Access denied: Missing required scope or authentication"
@@ -161,6 +218,17 @@ export const getPlan = api(
             }
 
             if (!params.id) {
+                // Ghi log thiếu ID
+                logAccessAttempt(
+                    "/plans/get",
+                    "get plan",
+                    false,
+                    authData.userID,
+                    authData.workspaceID,
+                    "Missing required parameter: id",
+                    "plan"
+                );
+                
                 return {
                     plan: null,
                     error: "Plan ID is required"
@@ -179,11 +247,33 @@ export const getPlan = api(
                 );
                 
                 if (result.rows.length === 0) {
+                    // Ghi log không tìm thấy
+                    logAccessAttempt(
+                        "/plans/get",
+                        "get plan",
+                        false,
+                        authData.userID,
+                        workspaceId,
+                        `Plan not found: ${params.id}`,
+                        "plan"
+                    );
+                    
                     return {
                         plan: null,
                         error: "Plan not found"
                     };
                 }
+                
+                // Ghi log thành công
+                logAccessAttempt(
+                    "/plans/get",
+                    "get plan",
+                    true,
+                    authData.userID,
+                    workspaceId,
+                    `Retrieved plan: ${params.id}`,
+                    "plan"
+                );
                 
                 return {
                     plan: result.rows[0]
@@ -193,6 +283,18 @@ export const getPlan = api(
             }
         } catch (error) {
             console.error('Error fetching plan:', error);
+            
+            // Ghi log lỗi
+            logAccessAttempt(
+                "/plans/get",
+                "get plan",
+                false,
+                "unknown",
+                "unknown",
+                `Error: ${(error as Error).message}`,
+                "plan"
+            );
+            
             return {
                 plan: null,
                 error: `Error: ${(error as Error).message}`
@@ -228,6 +330,17 @@ export const createPlan = api(
             
             // Kiểm tra quyền truy cập
             if (!authData || !hasScope(authData, 'plans:write')) {
+                // Ghi log thất bại
+                logAccessAttempt(
+                    "/plans/create",
+                    "create plan",
+                    false,
+                    authData?.userID || "unknown",
+                    authData?.workspaceID || "unknown",
+                    "Missing required scope: plans:write",
+                    "plan"
+                );
+                
                 return {
                     plan: null,
                     error: "Access denied: Missing required scope or authentication"
@@ -235,6 +348,17 @@ export const createPlan = api(
             }
 
             if (!params.name || params.price === undefined) {
+                // Ghi log thiếu thông tin
+                logAccessAttempt(
+                    "/plans/create",
+                    "create plan",
+                    false,
+                    authData.userID,
+                    authData.workspaceID,
+                    "Missing required fields: name or price",
+                    "plan"
+                );
+                
                 return {
                     plan: null,
                     error: "Name and price are required"
@@ -247,10 +371,20 @@ export const createPlan = api(
             const client = await pool.connect();
             try {
                 // Execute the query with parameter binding
-                // Không sử dụng SET LOCAL mà truyền workspace_id trực tiếp
                 const result = await client.query(
                     'INSERT INTO plan (name, description, price, workspace_id) VALUES ($1, $2, $3, $4) RETURNING *',
                     [params.name, params.description, params.price, workspaceId]
+                );
+                
+                // Ghi log thành công
+                logAccessAttempt(
+                    "/plans/create",
+                    "create plan",
+                    true,
+                    authData.userID,
+                    authData.workspaceID,
+                    `Created plan: ${result.rows[0].id} - ${params.name}`,
+                    "plan"
                 );
                 
                 return {
@@ -261,6 +395,18 @@ export const createPlan = api(
             }
         } catch (error) {
             console.error('Error creating plan:', error);
+            
+            // Ghi log lỗi
+            logAccessAttempt(
+                "/plans/create",
+                "create plan",
+                false,
+                "unknown",
+                "unknown",
+                `Error: ${(error as Error).message}`,
+                "plan"
+            );
+            
             return {
                 plan: null,
                 error: `Error: ${(error as Error).message}`
@@ -296,6 +442,17 @@ export const updatePlan = api(
             
             // Kiểm tra quyền truy cập
             if (!authData || !hasScope(authData, 'plans:write')) {
+                // Ghi log thất bại
+                logAccessAttempt(
+                    "/plans/update",
+                    "update plan",
+                    false,
+                    authData?.userID || "unknown",
+                    authData?.workspaceID || "unknown",
+                    "Missing required scope: plans:write",
+                    "plan"
+                );
+                
                 return {
                     plan: null,
                     error: "Access denied: Missing required scope or authentication"
@@ -303,6 +460,17 @@ export const updatePlan = api(
             }
 
             if (!params.id) {
+                // Ghi log thiếu ID
+                logAccessAttempt(
+                    "/plans/update",
+                    "update plan",
+                    false,
+                    authData.userID,
+                    authData.workspaceID,
+                    "Missing required parameter: id",
+                    "plan"
+                );
+                
                 return {
                     plan: null,
                     error: "Plan ID is required"
@@ -321,6 +489,17 @@ export const updatePlan = api(
                 );
                 
                 if (checkResult.rows.length === 0) {
+                    // Ghi log không tìm thấy
+                    logAccessAttempt(
+                        "/plans/update",
+                        "update plan",
+                        false,
+                        authData.userID,
+                        workspaceId,
+                        `Plan not found: ${params.id}`,
+                        "plan"
+                    );
+                    
                     return {
                         plan: null,
                         error: "Plan not found"
@@ -340,6 +519,17 @@ export const updatePlan = api(
                     [updatedName, updatedDescription, updatedPrice, params.id, workspaceId]
                 );
                 
+                // Ghi log thành công
+                logAccessAttempt(
+                    "/plans/update",
+                    "update plan",
+                    true,
+                    authData.userID,
+                    workspaceId,
+                    `Updated plan: ${params.id}`,
+                    "plan"
+                );
+                
                 return {
                     plan: result.rows[0]
                 };
@@ -348,6 +538,18 @@ export const updatePlan = api(
             }
         } catch (error) {
             console.error('Error updating plan:', error);
+            
+            // Ghi log lỗi
+            logAccessAttempt(
+                "/plans/update",
+                "update plan",
+                false,
+                "unknown",
+                "unknown",
+                `Error: ${(error as Error).message}`,
+                "plan"
+            );
+            
             return {
                 plan: null,
                 error: `Error: ${(error as Error).message}`
@@ -381,6 +583,17 @@ export const deletePlan = api(
             console.log("Has delete scope:", authData && hasScope(authData, 'plans:delete'));
             
             if (!authData || !hasScope(authData, 'plans:delete')) {
+                // Ghi log thất bại
+                logAccessAttempt(
+                    "/plans/delete",
+                    "delete plan",
+                    false,
+                    authData?.userID || "unknown",
+                    authData?.workspaceID || "unknown",
+                    "Missing required scope: plans:delete",
+                    "plan"
+                );
+                
                 return {
                     success: false,
                     message: "Failed to delete plan",
@@ -389,6 +602,17 @@ export const deletePlan = api(
             }
 
             if (!params.id) {
+                // Ghi log thiếu ID
+                logAccessAttempt(
+                    "/plans/delete",
+                    "delete plan",
+                    false,
+                    authData.userID,
+                    authData.workspaceID,
+                    "Missing required parameter: id",
+                    "plan"
+                );
+                
                 return {
                     success: false,
                     message: "Failed to delete plan",
@@ -408,6 +632,17 @@ export const deletePlan = api(
                 );
                 
                 if (checkResult.rows.length === 0) {
+                    // Ghi log không tìm thấy
+                    logAccessAttempt(
+                        "/plans/delete",
+                        "delete plan",
+                        false,
+                        authData.userID,
+                        workspaceId,
+                        `Plan not found: ${params.id}`,
+                        "plan"
+                    );
+                    
                     return {
                         success: false,
                         message: "Failed to delete plan",
@@ -421,6 +656,17 @@ export const deletePlan = api(
                     [params.id, workspaceId]
                 );
                 
+                // Ghi log thành công
+                logAccessAttempt(
+                    "/plans/delete",
+                    "delete plan",
+                    true,
+                    authData.userID,
+                    workspaceId,
+                    `Successfully deleted plan: ${params.id}`,
+                    "plan"
+                );
+                
                 return {
                     success: true,
                     message: 'Plan deleted successfully'
@@ -430,6 +676,18 @@ export const deletePlan = api(
             }
         } catch (error) {
             console.error('Error deleting plan:', error);
+            
+            // Ghi log lỗi
+            logAccessAttempt(
+                "/plans/delete",
+                "delete plan",
+                false,
+                "unknown",
+                "unknown",
+                `Error: ${(error as Error).message}`,
+                "plan"
+            );
+            
             return {
                 success: false,
                 message: "Failed to delete plan",

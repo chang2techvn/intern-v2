@@ -4,6 +4,7 @@ export interface UserJwtPayload extends JwtPayload {
     sub: string;       // User ID
     workspace_id: string;  // Workspace ID
     scopes: string[];  // User permissions/scopes
+    roles: string[];   // User roles
 }
 
 // This will be the structure that's available in the context
@@ -11,6 +12,7 @@ export interface AuthData {
     userID: string;
     workspaceID: string; 
     scopes: string[];
+    roles: string[];   // Thêm trường roles
 }
 
 // Khai báo global context để lưu trữ dữ liệu xác thực
@@ -79,7 +81,8 @@ export function verifyJWTToken(token: string): AuthData | null {
         const authData: AuthData = {
             userID: decoded.sub,
             workspaceID: decoded.workspace_id,
-            scopes: decoded.scopes || []
+            scopes: decoded.scopes || [],
+            roles: decoded.roles || [] // Đảm bảo trường roles được xử lý
         };
         
         return authData;

@@ -1,4 +1,4 @@
-import { verifyJWT } from './auth';
+import { verifyJWT} from "../auth/index";
 
 // Middleware configuration for the service
 export default {

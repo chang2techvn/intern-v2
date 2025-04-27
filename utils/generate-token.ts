@@ -6,7 +6,8 @@ import jwt from 'jsonwebtoken'
 const generateToken = (
     userId: string = '12345',
     workspaceId: string | number = '1',
-    scopes: string[] = ['plans:read', 'plans:write', 'plans:delete', 'admin:access']
+    scopes: string[] = ['plans:read', 'plans:write', 'plans:delete', 'admin:access'],
+    roles: string[] = [] // Thêm tham số roles với giá trị mặc định là mảng rỗng
 ) => {
     const jwtSecret = process.env.JWT_SECRET || 'development-secret-key';
     
@@ -14,6 +15,7 @@ const generateToken = (
         sub: userId,
         workspace_id: workspaceId,
         scopes: scopes,
+        roles: roles, // Thêm roles vào payload của token
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour expiration
     };
@@ -22,32 +24,42 @@ const generateToken = (
 };
 
 // Example: Generate a token with read-only access
-const readOnlyToken = generateToken('12345', '1', ['plans:read']);
+const readOnlyToken = generateToken('12345', '1', ['plans:read'], []);
 console.log('Read-only token:', readOnlyToken);
 
 // Example: Generate a token with read and write access
-const readWriteToken = generateToken('12345', '1', ['plans:read', 'plans:write']);
+const readWriteToken = generateToken('12345', '1', ['plans:read', 'plans:write'], []);
 console.log('Read-write token:', readWriteToken);
 
 // Example: Generate a token with full access
-const fullAccessToken = generateToken('12345', '207732', ['admin:access', 'plans:read', 'plans:write', 'plans:delete']);
+const fullAccessToken = generateToken('12345', '207732', ['admin:access', 'plans:read', 'plans:write', 'plans:delete'], ['admin']);
 console.log('Full access token:', fullAccessToken);
 
 // Example: Generate a token for workspace 2
-const workspace2Token = generateToken('12345', '2', ['plans:read', 'plans:write', 'plans:delete']);
+const workspace2Token = generateToken('12345', '2', ['plans:read', 'plans:write', 'plans:delete'], []);
 console.log('Workspace 2 token:', workspace2Token);
 
 // **** Tokens for admin API testing **** //
 
-// Token with retailer_admin role - used for /admin/checkin
-const retailerAdminToken = generateToken('12345', '1', ['retailer_admin']);
+// Token với role retailer_admin (sửa lại: thêm role vào đúng tham số thứ 4)
+const retailerAdminToken = generateToken('12345', '1', ['plans:read'], ['retailer_admin']);
 console.log('\nRetailer Admin token (for /admin/checkin):', retailerAdminToken);
 
-// Token with admin:access role - used for /admin/audit-logs
-const adminAccessToken = generateToken('12345', '1', ['admin:access']);
+// Token với admin role (sửa lại: thêm role vào đúng tham số)
+const adminAccessToken = generateToken('12345', '1', ['admin:access'], ['admin']);
 console.log('Admin Access token (for /admin/audit-logs):', adminAccessToken);
 
-// Token with both retailer_admin and admin:access roles - for testing both admin APIs
-const combinedAdminToken = generateToken('12345', '1', ['retailer_admin', 'admin:access']);
+// Token với cả hai quyền retailer_admin và admin
+const combinedAdminToken = generateToken('12345', '1', ['admin:access', 'plans:read'], ['retailer_admin', 'admin']);
 console.log('Combined Admin token (for all admin APIs):', combinedAdminToken);
 
+// Token với tất cả quyền cần thiết
+const AdminTokenAllApi = generateToken(
+    '12345', 
+    '1', 
+    ['admin:access', 'plans:read', 'plans:write', 'plans:delete'], 
+    ['retailer_admin', 'admin']
+);
+console.log('Admin token for All Api:', AdminTokenAllApi);
+
+export default generateToken;
