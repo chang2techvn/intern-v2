@@ -7,7 +7,8 @@ const generateToken = (
     userId: string = '12345',
     workspaceId: string | number = '1',
     scopes: string[] = ['plans:read', 'plans:write', 'plans:delete', 'admin:access'],
-    roles: string[] = [] // Thêm tham số roles với giá trị mặc định là mảng rỗng
+    roles: string[] = [], // Thêm tham số roles với giá trị mặc định là mảng rỗng
+    expiresIn: number = 60 * 60 // Default 1 hour expiration
 ) => {
     const jwtSecret = process.env.JWT_SECRET || 'development-secret-key';
     
@@ -17,7 +18,7 @@ const generateToken = (
         scopes: scopes,
         roles: roles, // Thêm roles vào payload của token
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour expiration
+        exp: Math.floor(Date.now() / 1000) + expiresIn
     };
     
     return jwt.sign(payload, jwtSecret);
@@ -41,25 +42,130 @@ console.log('Workspace 2 token:', workspace2Token);
 
 // **** Tokens for admin API testing **** //
 
-// Token với role retailer_admin (sửa lại: thêm role vào đúng tham số thứ 4)
-const retailerAdminToken = generateToken('12345', '1', ['plans:read'], ['retailer_admin']);
+// Token với role retailer_admin (sửa lại: thêm role vào đúng tham số thứ 4 và thời gian hết hạn 7 ngày)
+const retailerAdminToken = generateToken('12345', '1', ['plans:read', 'admin:access'], ['retailer_admin'], 7 * 24 * 60 * 60); // 7 days expiration
 console.log('\nRetailer Admin token (for /admin/checkin):', retailerAdminToken);
 
-// Token với admin role (sửa lại: thêm role vào đúng tham số)
-const adminAccessToken = generateToken('12345', '1', ['admin:access'], ['admin']);
+// Token với admin role (sửa lại: thêm role vào đúng tham số và thời gian hết hạn 7 ngày)
+const adminAccessToken = generateToken('12345', '1', ['admin:access'], ['admin'], 7 * 24 * 60 * 60); // 7 days expiration
 console.log('Admin Access token (for /admin/audit-logs):', adminAccessToken);
 
-// Token với cả hai quyền retailer_admin và admin
-const combinedAdminToken = generateToken('12345', '1', ['admin:access', 'plans:read'], ['retailer_admin', 'admin']);
+// Token với cả hai quyền retailer_admin và admin (thêm thời gian hết hạn 7 ngày)
+const combinedAdminToken = generateToken('12345', '1', ['admin:access', 'plans:read'], ['retailer_admin', 'admin'], 7 * 24 * 60 * 60); // 7 days expiration
 console.log('Combined Admin token (for all admin APIs):', combinedAdminToken);
 
-// Token với tất cả quyền cần thiết
+// Token với tất cả quyền cần thiết (thêm thời gian hết hạn 7 ngày)
 const AdminTokenAllApi = generateToken(
     '12345', 
     '1', 
-    ['admin:access', 'plans:read', 'plans:write', 'plans:delete'], 
-    ['retailer_admin', 'admin']
+    ['admin:access', 'plans:read', 'plans:write', 'plans:delete', 'logs:read'], 
+    ['retailer_admin', 'admin'],
+    7 * 24 * 60 * 60 // 7 days expiration
 );
 console.log('Admin token for All Api:', AdminTokenAllApi);
+
+// **** Tokens for lead API testing **** //
+
+// Token với các quyền cho lead API (read và write)
+const leadToken = generateToken('12345', '1', ['leads:read', 'leads:write'], []);
+console.log('\nLead API token (read & write):', leadToken);
+
+// Token chỉ với quyền đọc lead API
+const leadReadOnlyToken = generateToken('12345', '1', ['leads:read'], []);
+console.log('Lead API token (read only):', leadReadOnlyToken);
+
+// **** Tokens for offer API testing **** //
+
+// Token với các quyền cho offer API (read và write)
+const offerToken = generateToken('12345', '1', ['offers:read', 'offers:write'], []);
+console.log('\nOffer API token (read & write):', offerToken);
+
+// Token chỉ với quyền đọc offer API
+const offerReadOnlyToken = generateToken('12345', '1', ['offers:read'], []);
+console.log('Offer API token (read only):', offerReadOnlyToken);
+
+// **** Tokens for application API testing **** //
+
+// Token với các quyền cho application API (read và write)
+const applicationToken = generateToken('12345', '1', ['applications:read', 'applications:write'], []);
+console.log('\nApplication API token (read & write):', applicationToken);
+
+// Token chỉ với quyền đọc application API
+const applicationReadOnlyToken = generateToken('12345', '1', ['applications:read'], []);
+console.log('Application API token (read only):', applicationReadOnlyToken);
+
+// **** Token với tất cả các quyền cho lead, offer và application **** //
+const combinedApiToken = generateToken(
+    '12345',
+    '1',
+    ['leads:read', 'leads:write', 'offers:read', 'offers:write', 'applications:read', 'applications:write'],
+    []
+);
+console.log('\nCombined API token (all lead, offer, application scopes):', combinedApiToken);
+
+// **** Token với đầy đủ tất cả các quyền trong hệ thống **** //
+const superToken = generateToken(
+    '12345',
+    '1',
+    [
+        'admin:access',
+        'plans:read', 'plans:write', 'plans:delete',
+        'leads:read', 'leads:write', 'leads:delete',
+        'applications:read', 'applications:write', 'applications:delete',
+        'offers:read', 'offers:write', 'offers:delete'
+    ],
+    ['admin', 'retailer_admin', 'super_admin']
+);
+console.log('\nSuper token (full access to all resources):', superToken);
+
+// **** LONG-LIVED TOKEN FOR DASHBOARD TESTING **** //
+// Token with 1 year expiration (31536000 seconds) for dashboard testing
+const longLivedToken = generateToken(
+    '12345',
+    '1',
+    ['leads:read', 'leads:write', 'offers:read', 'offers:write', 'applications:read', 'applications:write'],
+    [],
+    31536000 // 1 year in seconds
+);
+console.log('\nLONG-LIVED TOKEN FOR DASHBOARD TESTING (1 year expiry):');
+console.log(longLivedToken);
+
+// **** MASTER TOKEN FOR ALL APIS **** //
+// Token với tất cả các quyền và roles cần thiết cho mọi API trong hệ thống, hết hạn sau 30 ngày
+const masterToken = generateToken(
+    '12345',
+    '1',
+    [
+        // Admin scopes
+        'admin:access',
+        'logs:read',
+        
+        // Plan scopes
+        'plans:read', 
+        'plans:write', 
+        'plans:delete',
+        
+        // Lead scopes
+        'leads:read', 
+        'leads:write', 
+        'leads:delete',
+        
+        // Application scopes
+        'applications:read', 
+        'applications:write', 
+        'applications:delete',
+        
+        // Offer scopes
+        'offers:read', 
+        'offers:write', 
+        'offers:delete'
+    ],
+    ['admin', 'retailer_admin', 'super_admin'],
+    30 * 24 * 60 * 60 // 30 days expiration
+);
+
+console.log('\n===== MASTER TOKEN FOR ALL APIS (30 days expiry) =====');
+console.log(masterToken);
+console.log('=========================================================');
 
 export default generateToken;
