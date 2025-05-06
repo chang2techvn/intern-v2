@@ -56,14 +56,18 @@ jobs:
           # Hiển thị phiên bản Encore để debug
           encore version
           
-          # Hiển thị danh sách lệnh có sẵn
-          encore help
+          # Sử dụng lệnh build với cờ deployment
+          encore build
           
-          # Thực hiện deploy trực tiếp
+          # Kiểm tra namespace hiện có
+          encore namespace list
+          
+          # Kiểm tra lệnh app
+          encore app --help
+          
+          # Thực hiện push thay vì run --prod
           cd "/home/runner/work/intern-v2/intern-v2"
-          echo "Đang thực hiện deploy từ thư mục: $(pwd)"
-          ls -la
-          
-          encore run --prod
+          encore check
+          encore run
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
