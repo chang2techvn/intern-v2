@@ -50,8 +50,13 @@ jobs:
       
       - name: Deploy to Encore Cloud
         run: |
+          # Đăng nhập với API key
           encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
-          APP_ID="mission-brief-ec62"
-          encore deploy $APP_ID --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
+          
+          # Hiển thị phiên bản Encore để debug
+          encore version
+          
+          # Sử dụng lệnh deploy cho App hiện tại
+          encore app push --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
