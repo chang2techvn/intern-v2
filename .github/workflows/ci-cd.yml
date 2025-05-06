@@ -1,0 +1,114 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Type check
+        run: npm run type-check
+      
+      - name: Debug directory structure
+        run: find . -name "*.test.ts" -type f
+      
+      - name: Run tests
+        run: npm test
+  
+  deploy:
+    name: Deploy to Encore Cloud
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Install Encore CLI
+        run: |
+          curl -s https://encore.dev/install.sh | bash
+          echo "$HOME/.encore/bin" >> $GITHUB_PATH
+      
+      - name: Set up Git for Encore
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Deploy to Encore Cloud using Git Integration
+        run: |
+          # Đăng nhập với API key
+          encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
+          
+          # Hiển thị phiên bản Encore
+          encore version
+          
+          # Kiểm tra app ID từ file encore.app
+          APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
+          echo "App ID: $APP_ID"
+          
+          # Thực hiện link với app trên Encore Cloud
+          echo "Linking app with Encore Cloud..."
+          encore app link $APP_ID
+          
+          # Cấu hình Git remote cho Encore
+          echo "Cấu hình Git remote cho Encore..."
+          git remote remove encore || true
+          git remote add encore "encore://$APP_ID.git"
+          
+          # Hiển thị các remote
+          echo "Danh sách remote:"
+          git remote -v
+          
+          # Cấu hình SSH để tự động chấp nhận host key
+          echo "Cấu hình SSH cho Encore..."
+          mkdir -p ~/.ssh
+          # Thêm cả encore.dev và git.encore.dev vào known_hosts
+          ssh-keyscan encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan git.encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Hiển thị nội dung known_hosts để debug
+          echo "Known hosts:"
+          cat ~/.ssh/known_hosts
+          
+          # Thiết lập SSH để tự động chấp nhận hosts mới (chỉ cho quá trình CI/CD này)
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+          
+          # Đẩy code lên Encore
+          echo "Đang triển khai lên Encore Cloud..."
+          git push encore HEAD:refs/heads/main -f
+          
+          echo "===== Triển khai hoàn tất ====="
+          echo "Kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
+        env:
+          ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
