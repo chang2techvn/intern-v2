@@ -49,6 +49,9 @@ jobs:
           echo "$HOME/.encore/bin" >> $GITHUB_PATH
       
       - name: Deploy to Encore Cloud
-        run: encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }} && encore app deploy
+        run: |
+          encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
+          APP_ID="mission-brief-ec62"
+          encore deploy $APP_ID --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
