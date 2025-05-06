@@ -1,5 +1,8 @@
 import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'url';
 import path from 'path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   test: {
@@ -8,8 +11,8 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     isolate: true,
     include: [
-      '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      'api/**/*.test.ts'
+      './**/*.test.ts',
+      './api/**/*.test.ts'
     ],
     exclude: [
       '**/node_modules/**',
@@ -18,6 +21,6 @@ export default defineConfig({
     ],
     testTimeout: 10000,
     globals: true,
-    root: path.resolve(__dirname)
+    root: __dirname
   }
 });

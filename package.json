@@ -6,7 +6,7 @@
   "license": "MPL-2.0",
   "type": "module",
   "scripts": {
-    "test": "vitest run --config ./vitest.config.ts",
+    "test": "vitest run --config ./vitest.config.ts --dir .",
     "type-check": "tsc --noEmit",
     "build": "tsc --noEmit"
   },

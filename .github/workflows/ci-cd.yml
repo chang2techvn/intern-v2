@@ -27,6 +27,9 @@ jobs:
       - name: Type check
         run: npm run type-check
       
+      - name: Debug directory structure
+        run: find . -name "*.test.ts" -type f
+      
       - name: Run tests
         run: npm test
   
