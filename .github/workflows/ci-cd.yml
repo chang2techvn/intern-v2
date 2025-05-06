@@ -53,32 +53,20 @@ jobs:
           # Đăng nhập với API key
           encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
           
-          # Hiển thị phiên bản Encore để debug
+          # Hiển thị phiên bản Encore và thông tin ứng dụng
           encore version
           
-          # Sử dụng lệnh deploy thay vì run
-          # Tạo một tệp tin setup.sh để triển khai
-          cat > setup.sh << 'EOF'
-          #!/bin/bash
-          set -e
-          # Đặt các biến môi trường cần thiết
-          export ENCORE_APP_ID="mission-brief-ec62"
+          # Kiểm tra ứng dụng 
+          encore app info
           
-          # Sử dụng curl để gửi yêu cầu API triển khai
-          curl -X POST "https://api.encore.dev/v1/apps/${ENCORE_APP_ID}/deploy" \
-            -H "Authorization: Bearer $ENCORE_AUTH_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "source": "github",
-              "branch": "main",
-              "commit": "'$(git rev-parse HEAD)'"
-            }'
+          # Triển khai phiên bản mới theo cách được khuyến nghị trong tài liệu
+          echo "==== Đang triển khai lên Encore Cloud ===="
+          encore env list
+          encore env push production --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
           
-          echo "Đã gửi yêu cầu triển khai. Kiểm tra trạng thái tại https://app.encore.cloud/${ENCORE_APP_ID}"
-          EOF
+          echo "==== Kiểm tra trạng thái triển khai ===="
+          encore env info production
           
-          # Thực thi script
-          chmod +x setup.sh
-          ./setup.sh
+          echo "Triển khai hoàn tất. Truy cập https://app.encore.cloud/mission-brief-ec62 để xem chi tiết"
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
