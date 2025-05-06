@@ -63,99 +63,116 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Deploy to Encore Cloud via local Git deployment script
+      - name: Manually prepare authentication for Encore
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
         run: |
-          # Create deployment directory
-          mkdir -p ~/encore-deploy
-          cd ~/encore-deploy
+          # Create the directory structure
+          mkdir -p ~/.encore
           
-          # Clone repository afresh for deployment
-          echo "Cloning repository for deployment..."
-          git clone $GITHUB_WORKSPACE .
+          # Create the config file with the correct format based on Encore CLI version v1.46.21
+          cat > ~/.encore/config.json << EOF
+          {
+            "auth": {
+              "active_token": "$ENCORE_AUTH_TOKEN",
+              "tokens": {
+                "$ENCORE_AUTH_TOKEN": {
+                  "CreatedAt": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+                }
+              }
+            }
+          }
+          EOF
+          chmod 600 ~/.encore/config.json
+          
+          # Export the auth token as environment variable
+          echo "ENCORE_AUTH=$ENCORE_AUTH_TOKEN" >> $GITHUB_ENV
+          
+          # Verify config file
+          echo "Config file created:"
+          ls -la ~/.encore/
+          
+          # Try confirming auth status (informational only)
+          encore auth status || true
+      
+      - name: Create custom deploy script
+        env:
+          ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
+        run: |
+          mkdir -p ~/deploy-scripts
+          
+          cat > ~/deploy-scripts/deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
           
           # Extract app ID
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
           echo "App ID: $APP_ID"
           
-          # Create an encoded token file for auth
-          echo "Configuring authentication..."
-          mkdir -p ~/.encore
-          echo "$ENCORE_AUTH_TOKEN" > ~/.encore/authtoken
-          chmod 600 ~/.encore/authtoken
-          
-          # Setup SSH known hosts
-          mkdir -p ~/.ssh
-          ssh-keyscan git.encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
-          
-          # Disable StrictHostKeyChecking for encore domains
-          cat > ~/.ssh/config << EOF
-          Host *.encore.dev git.encore.dev
-            StrictHostKeyChecking no
-            UserKnownHostsFile=/dev/null
-          EOF
-          chmod 600 ~/.ssh/config
-          
-          # Create deploy script
-          cat > deploy.sh << 'EOF'
-          #!/bin/bash
-          set -e
-          
-          # Configure Git
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          
-          # Get the app ID
-          APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
-          AUTH_TOKEN=$(cat ~/.encore/authtoken)
-          
-          # Set environment variable for git-remote-encore
-          export ENCORE_AUTH="$AUTH_TOKEN"
-          
-          # Configure Git credential helper
-          git config --global credential.helper store
-          echo "https://token:${AUTH_TOKEN}@git.encore.dev" > ~/.git-credentials
-          chmod 600 ~/.git-credentials
-          
-          # Enable verbose output for debugging
-          export GIT_TRACE=1
-          export GIT_CURL_VERBOSE=1
-          export GIT_SSH_COMMAND="ssh -v -o StrictHostKeyChecking=no"
-          
-          # Add Encore remote
+          # Configure Git remote for Encore
           git remote remove encore 2>/dev/null || true
-          git remote add encore "encore://${APP_ID}.git"
-          echo "Remote added:"
+          git remote add encore "encore://$APP_ID.git"
           git remote -v
           
-          # Push to Encore
-          echo "Pushing to Encore Cloud..."
-          git push -v encore HEAD:refs/heads/main -f
+          # Set Git config for credentials
+          git config credential.helper store
+          echo "https://git.encore.dev" > ~/.git-credentials
           
-          # Check push result
-          if [ $? -eq 0 ]; then
-            echo "Successfully deployed to Encore Cloud!"
-          else
-            echo "Failed to deploy to Encore Cloud"
-            exit 1
-          fi
+          # Try pushing to Encore Cloud
+          echo "Pushing to Encore Cloud..."
+          
+          # Use explicit environment variable for git-remote-encore
+          export ENCORE_AUTH="${ENCORE_AUTH_TOKEN}"
+          
+          # Debug
+          echo "Checking git executable path and version:"
+          which git
+          git --version
+          
+          echo "Checking git-remote-encore path:"
+          which git-remote-encore || echo "git-remote-encore not found in PATH"
+          
+          echo "Checking for git remote helpers:"
+          find /usr/lib/git-core/ -name "git-remote*" || true
+          find ~/.encore/bin/ -name "git-remote*" || true
+          
+          # Print PATH
+          echo "Current PATH: $PATH"
+          
+          # Push using explicit path to git-remote-encore
+          PATH="$HOME/.encore/bin:$PATH" git push encore HEAD:refs/heads/main -f
+          
+          echo "Push completed!"
           EOF
           
-          chmod +x deploy.sh
-          
-          # Run the deployment script
-          echo "Executing deployment script..."
-          ./deploy.sh
-          
-          echo "===== Deployment process completed ====="
-          echo "Check deployment status at: https://app.encore.cloud/$APP_ID"
+          chmod +x ~/deploy-scripts/deploy.sh
       
-      - name: Verify deployment status
-        if: always()
+      - name: Run deploy script
+        env:
+          ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
         run: |
+          cd $GITHUB_WORKSPACE
+          export ENCORE_AUTH="${ENCORE_AUTH_TOKEN}"
+          echo "Running deployment script..."
+          bash ~/deploy-scripts/deploy.sh
+          
+      - name: Fallback to manual curl deployment (if Git push fails)
+        if: failure()
+        env:
+          ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
+        run: |
+          echo "Attempting fallback deployment via API..."
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
-          echo "You can check the deployment status at: https://app.encore.cloud/$APP_ID"
-          echo "If deployment was unsuccessful, you may need to:"
-          echo "1. Update your ENCORE_AUTH_TOKEN in GitHub Secrets"
-          echo "2. Manually deploy from your terminal using the method that worked previously"
+          echo "App ID: $APP_ID"
+          
+          # Create a tag-based deployment
+          TAG="github-action-deploy-$(date +%Y%m%d%H%M%S)"
+          git tag -a "$TAG" -m "GitHub Actions deployment tag"
+          
+          # Attempt deployment via API
+          curl -v -X POST "https://api.encore.dev/apps/$APP_ID/deployments" \
+            -H "Authorization: Bearer $ENCORE_AUTH_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag\": \"$TAG\", \"message\": \"GitHub Actions deployment\"}"
+          
+          echo "Check deployment status at: https://app.encore.cloud/$APP_ID"
