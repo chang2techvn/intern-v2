@@ -79,9 +79,8 @@ jobs:
           echo "Linking app with Encore Cloud..."
           encore app link $APP_ID
           
-          # Sử dụng APP_ID trực tiếp mà không thông qua script
+          # Cấu hình Git remote cho Encore
           echo "Cấu hình Git remote cho Encore..."
-          # Thiết lập remote encore nếu chưa có
           git remote remove encore || true
           git remote add encore "encore://$APP_ID.git"
           
@@ -89,16 +88,27 @@ jobs:
           echo "Danh sách remote:"
           git remote -v
           
-          # Cấu hình SSH cho Encore
+          # Cấu hình SSH để tự động chấp nhận host key
           echo "Cấu hình SSH cho Encore..."
           mkdir -p ~/.ssh
+          # Thêm cả encore.dev và git.encore.dev vào known_hosts
           ssh-keyscan encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan git.encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Hiển thị nội dung known_hosts để debug
+          echo "Known hosts:"
+          cat ~/.ssh/known_hosts
+          
+          # Thiết lập SSH để tự động chấp nhận hosts mới (chỉ cho quá trình CI/CD này)
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
           
           # Đẩy code lên Encore
           echo "Đang triển khai lên Encore Cloud..."
           git push encore HEAD:refs/heads/main -f
           
           echo "===== Triển khai hoàn tất ====="
-          echo "Hãy kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
+          echo "Kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
