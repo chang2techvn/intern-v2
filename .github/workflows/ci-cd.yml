@@ -38,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
+    env:
+      ENCORE_AUTH: ${{ secrets.ENCORE_AUTH_TOKEN }}
     
     steps:
       - name: Checkout repository
@@ -63,55 +65,47 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
+      - name: Setup Encore auth
+        run: |
+          mkdir -p ~/.encore
+          echo "${{ secrets.ENCORE_AUTH_TOKEN }}" > ~/.encore/authtoken
+          chmod 600 ~/.encore/authtoken
+          cat > ~/.encore/config.json << EOF
+          {
+            "auth": {
+              "token": "${{ secrets.ENCORE_AUTH_TOKEN }}"
+            }
+          }
+          EOF
+          chmod 600 ~/.encore/config.json
+      
       - name: Deploy to Encore Cloud using Git Integration
         run: |
-          # Đăng nhập với API key trực tiếp (không có flag -y)
-          encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
-          
-          # Hiển thị phiên bản Encore
           encore version
-          
-          # Kiểm tra app ID từ file encore.app
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
           echo "App ID: $APP_ID"
-          
-          # Thực hiện link với app trên Encore Cloud 
           echo "Linking app with Encore Cloud..."
           encore app link $APP_ID
-          
-          # Cấu hình Git remote cho Encore
           echo "Cấu hình Git remote cho Encore..."
           git remote remove encore 2>/dev/null || true
           git remote add encore "encore://$APP_ID.git"
-          
-          # Hiển thị các remote
           echo "Danh sách remote:"
           git remote -v
-          
-          # Cấu hình SSH để tự động chấp nhận host key
           echo "Cấu hình SSH cho Encore..."
           mkdir -p ~/.ssh
-          # Thêm cả encore.dev và git.encore.dev vào known_hosts
           ssh-keyscan encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
           ssh-keyscan git.encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
-          
-          # Thiết lập SSH để tự động chấp nhận hosts mới
-          echo "StrictHostKeyChecking no" > ~/.ssh/config
+          cat > ~/.ssh/config << EOF
+          Host *.encore.dev encore.dev git.encore.dev
+            StrictHostKeyChecking no
+            UserKnownHostsFile=/dev/null
+          EOF
           chmod 600 ~/.ssh/config
-          
-          # Kiểm tra trạng thái đăng nhập
-          echo "Kiểm tra trạng thái đăng nhập Encore:"
-          encore auth status
-          
-          # Thiết lập Git environment variables cho xác thực
-          export ENCORE_AUTH="${{ secrets.ENCORE_AUTH_TOKEN }}"
-          
-          # Đẩy code lên Encore
+          git config --global credential.helper store
+          echo "https://token:${{ secrets.ENCORE_AUTH_TOKEN }}@git.encore.dev" > ~/.git-credentials
+          chmod 600 ~/.git-credentials
+          export GIT_TRACE=1
           echo "Đang triển khai lên Encore Cloud..."
           git push encore HEAD:refs/heads/main -f
-          
           echo "===== Triển khai hoàn tất ====="
           echo "Kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
-        env:
-          ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
-          ENCORE_AUTH: ${{ secrets.ENCORE_AUTH_TOKEN }}
