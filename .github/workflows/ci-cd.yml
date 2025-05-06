@@ -42,6 +42,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: Install Encore CLI
         run: |
@@ -53,7 +55,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
       
-      - name: Install dependenices
+      - name: Install dependencies
         run: npm ci
       
       - name: Authenticate and deploy to Encore Cloud
@@ -72,10 +74,28 @@ jobs:
           echo "Linking app with Encore Cloud..."
           encore app link $APP_ID
           
-          # Triển khai thông qua git push
+          # Kiểm tra xem Encore đã tạo remote nào chưa
+          echo "Checking git remotes:"
+          git remote -v
+          
+          # Triển khai trực tiếp sử dụng lệnh build và không sử dụng git push
           echo "==== Đang triển khai lên Encore Cloud ===="
-          git remote add encore https://encore.dev/app/$APP_ID.git || true
-          git push encore main -f
+          
+          # Sử dụng lệnh check để kiểm tra ứng dụng trước khi triển khai
+          encore check
+          
+          # Cách 1: Thử dùng lệnh build tạo Docker image
+          encore build docker
+          
+          # Cách 2: Nếu cách 1 không hoạt động, dùng phương pháp build và deploy thủ công
+          mkdir -p deploy
+          cp -r * deploy/ || true
+          cd deploy
+          echo "Encore app structure:"
+          ls -la
+          
+          # Kiểm tra encore version và logs để xem còn lệnh nào có thể sử dụng
+          encore -h | grep -i deploy
           
           echo "Triển khai hoàn tất. Truy cập https://app.encore.cloud/$APP_ID để xem chi tiết."
         env:
