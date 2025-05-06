@@ -65,8 +65,10 @@ jobs:
       
       - name: Deploy to Encore Cloud using Git Integration
         run: |
-          # Đăng nhập với API key
-          encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
+          # Thiết lập xác thực không tương tác
+          mkdir -p ~/.encore
+          echo "{\"auth\":{\"tokens\":[\"${{ secrets.ENCORE_AUTH_TOKEN }}\"]}}" > ~/.encore/config.json
+          chmod 600 ~/.encore/config.json
           
           # Hiển thị phiên bản Encore
           encore version
@@ -75,13 +77,13 @@ jobs:
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
           echo "App ID: $APP_ID"
           
-          # Thực hiện link với app trên Encore Cloud
+          # Thực hiện link với app trên Encore Cloud (không tương tác)
           echo "Linking app with Encore Cloud..."
-          encore app link $APP_ID
+          encore app link $APP_ID --non-interactive || true
           
           # Cấu hình Git remote cho Encore
           echo "Cấu hình Git remote cho Encore..."
-          git remote remove encore || true
+          git remote remove encore 2>/dev/null || true
           git remote add encore "encore://$APP_ID.git"
           
           # Hiển thị các remote
@@ -95,14 +97,17 @@ jobs:
           ssh-keyscan encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
           ssh-keyscan git.encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
           
-          # Hiển thị nội dung known_hosts để debug
-          echo "Known hosts:"
-          cat ~/.ssh/known_hosts
-          
-          # Thiết lập SSH để tự động chấp nhận hosts mới (chỉ cho quá trình CI/CD này)
-          mkdir -p ~/.ssh
+          # Thiết lập SSH để tự động chấp nhận hosts mới
           echo "StrictHostKeyChecking no" > ~/.ssh/config
           chmod 600 ~/.ssh/config
+          
+          # Thiết lập Git credential helper để sử dụng token
+          git config --global credential.helper store
+          echo "https://git.encore.dev:${{ secrets.ENCORE_AUTH_TOKEN }}@encore.dev" > ~/.git-credentials
+          chmod 600 ~/.git-credentials
+          
+          # Thiết lập biến môi trường cho Git SSH
+          export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
           
           # Đẩy code lên Encore
           echo "Đang triển khai lên Encore Cloud..."
