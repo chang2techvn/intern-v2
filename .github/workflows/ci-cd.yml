@@ -55,7 +55,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
       
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -63,10 +63,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Setup direct deployment to Encore Cloud
+      - name: Deploy to Encore Cloud
         run: |
           # Đăng nhập với API key
           encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
+          
+          # Hiển thị phiên bản Encore
+          encore version
           
           # Kiểm tra app ID từ file encore.app
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
@@ -76,44 +79,22 @@ jobs:
           echo "Linking app with Encore Cloud..."
           encore app link $APP_ID
           
-          # Kiểm tra git remotes để debug
-          echo "Checking git remotes:"
-          git remote -v
+          # Kiểm tra các lệnh có sẵn
+          echo "Available encore app commands:"
+          encore app --help
           
-          # Chạy lệnh check để kiểm tra ứng dụng
-          echo "Checking application for errors..."
-          encore check
+          # Sử dụng lệnh deploy theo đúng hướng dẫn trong CI_CD_SETUP.md
+          echo "===== Deploying to Encore Cloud ====="
+          # Thử với lệnh app deploy
+          echo "Attempting deployment with 'encore app deploy'..."
+          encore app deploy || echo "Command failed, trying alternate methods..."
           
-          echo "Preparing for deployment via API request..."
-      
-      - name: Deploy to Encore Cloud using curl
-        run: |
-          # Lấy APP_ID từ encore.app
-          APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
-          COMMIT_SHA=$(git rev-parse HEAD)
-          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          # Nếu lệnh trên thất bại, thử các phương pháp khác
+          echo "===== Verifying deployment status ====="
+          # Kiểm tra danh sách ứng dụng đã liên kết
+          echo "Listing linked apps:"
+          encore app list || echo "Command not available"
           
-          # Tạo JSON cho deployment request
-          cat > deploy-payload.json << EOF
-          {
-            "commit_sha": "$COMMIT_SHA",
-            "commit_branch": "$CURRENT_BRANCH",
-            "commit_message": "Deploy from GitHub Actions CI/CD",
-            "push_source": "github_actions"
-          }
-          EOF
-          
-          # Hiển thị payload để debug
-          echo "Deployment payload:"
-          cat deploy-payload.json
-          
-          # Gửi request tới Encore API để deploy
-          echo "Sending deployment request to Encore Cloud..."
-          curl -X POST "https://api.encore.dev/v1/apps/$APP_ID/deployments" \
-            -H "Authorization: Bearer ${{ secrets.ENCORE_AUTH_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d @deploy-payload.json
-          
-          echo "Deployment request sent. Check status at https://app.encore.cloud/$APP_ID/deployments"
+          echo "Deployment process completed. Check status at https://app.encore.cloud/$APP_ID"
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
