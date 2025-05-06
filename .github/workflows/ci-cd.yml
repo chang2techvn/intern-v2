@@ -63,7 +63,7 @@ jobs:
           # Đăng nhập với API key
           encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
           
-          # Hiển thị phiên bản Encore và thông tin trợ giúp
+          # Hiển thị phiên bản Encore
           encore version
           
           # Kiểm tra app ID từ file encore.app
@@ -74,28 +74,30 @@ jobs:
           echo "Linking app with Encore Cloud..."
           encore app link $APP_ID
           
-          # Kiểm tra xem Encore đã tạo remote nào chưa
+          # Kiểm tra git remotes để debug
           echo "Checking git remotes:"
           git remote -v
           
-          # Triển khai trực tiếp sử dụng lệnh build và không sử dụng git push
+          # Lấy commit ID hiện tại để sử dụng làm tag
+          COMMIT_ID=$(git rev-parse --short HEAD)
+          IMAGE_TAG="mission-brief:$COMMIT_ID"
+          
           echo "==== Đang triển khai lên Encore Cloud ===="
           
-          # Sử dụng lệnh check để kiểm tra ứng dụng trước khi triển khai
+          # Kiểm tra các lệnh có sẵn
+          echo "Available encore commands:"
+          encore -h
+          
+          # Chạy lệnh check để kiểm tra ứng dụng
           encore check
           
-          # Cách 1: Thử dùng lệnh build tạo Docker image
-          encore build docker
+          # Xem thông tin về lệnh run
+          echo "Run command options:"
+          encore run -h
           
-          # Cách 2: Nếu cách 1 không hoạt động, dùng phương pháp build và deploy thủ công
-          mkdir -p deploy
-          cp -r * deploy/ || true
-          cd deploy
-          echo "Encore app structure:"
-          ls -la
-          
-          # Kiểm tra encore version và logs để xem còn lệnh nào có thể sử dụng
-          encore -h | grep -i deploy
+          # Sử dụng lệnh run với flag --publish để deploy lên cloud
+          echo "Deploying to Encore Cloud..."
+          encore run --publish
           
           echo "Triển khai hoàn tất. Truy cập https://app.encore.cloud/$APP_ID để xem chi tiết."
         env:
