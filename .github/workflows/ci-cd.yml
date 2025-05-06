@@ -67,45 +67,84 @@ jobs:
       
       - name: Setup Encore auth
         run: |
+          # Tạo thư mục cấu hình cho Encore
           mkdir -p ~/.encore
-          echo "${{ secrets.ENCORE_AUTH_TOKEN }}" > ~/.encore/authtoken
-          chmod 600 ~/.encore/authtoken
+          
+          # Xóa các file cấu hình cũ nếu có
+          rm -f ~/.encore/authtoken ~/.encore/config.json 2>/dev/null || true
+          
+          # Tạo file cấu hình mới theo đúng định dạng
           cat > ~/.encore/config.json << EOF
           {
             "auth": {
-              "token": "${{ secrets.ENCORE_AUTH_TOKEN }}"
+              "active_token": "${{ secrets.ENCORE_AUTH_TOKEN }}",
+              "tokens": ["${{ secrets.ENCORE_AUTH_TOKEN }}"]
             }
           }
           EOF
           chmod 600 ~/.encore/config.json
+          
+          # Kiểm tra file cấu hình
+          echo "Kiểm tra file cấu hình Encore:"
+          ls -la ~/.encore/
+          
+          # Thử xác thực với Encore
+          echo "Thực hiện đăng nhập Encore..."
+          encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
       
-      - name: Deploy to Encore Cloud using Git Integration
+      - name: Deploy to Encore Cloud manually
         run: |
+          # Hiển thị phiên bản Encore
           encore version
+          
+          # Kiểm tra trạng thái đăng nhập
+          echo "Kiểm tra trạng thái đăng nhập:"
+          encore auth status || true
+          
+          # Lấy app ID từ file encore.app
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
           echo "App ID: $APP_ID"
-          echo "Linking app with Encore Cloud..."
-          encore app link $APP_ID
+          
+          # Bỏ qua bước link app và tạo remote thủ công
+          echo "Tạo thư mục deploy tạm thời..."
+          mkdir -p /tmp/encore-deploy
+          cd /tmp/encore-deploy
+          
+          # Clone repo hiện tại
+          echo "Clone repository để triển khai..."
+          git clone $GITHUB_WORKSPACE .
+          
+          # Thiết lập thông tin git
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Thiết lập deploy thông qua git
           echo "Cấu hình Git remote cho Encore..."
-          git remote remove encore 2>/dev/null || true
           git remote add encore "encore://$APP_ID.git"
-          echo "Danh sách remote:"
-          git remote -v
+          
+          # Cấu hình SSH 
           echo "Cấu hình SSH cho Encore..."
           mkdir -p ~/.ssh
           ssh-keyscan encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
           ssh-keyscan git.encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
-          cat > ~/.ssh/config << EOF
-          Host *.encore.dev encore.dev git.encore.dev
-            StrictHostKeyChecking no
-            UserKnownHostsFile=/dev/null
-          EOF
+          
+          # Thiết lập SSH options
+          echo "StrictHostKeyChecking no" > ~/.ssh/config
           chmod 600 ~/.ssh/config
+          
+          # Thiết lập Git environment và credential
+          export GIT_TRACE=1
+          export GIT_CURL_VERBOSE=1
+          export GIT_SSH_COMMAND="ssh -v -o StrictHostKeyChecking=no"
+          
+          # Thiết lập Git credentials
           git config --global credential.helper store
           echo "https://token:${{ secrets.ENCORE_AUTH_TOKEN }}@git.encore.dev" > ~/.git-credentials
           chmod 600 ~/.git-credentials
-          export GIT_TRACE=1
+          
+          # Đẩy code lên Encore
           echo "Đang triển khai lên Encore Cloud..."
-          git push encore HEAD:refs/heads/main -f
+          git push -v encore HEAD:refs/heads/main -f
+          
           echo "===== Triển khai hoàn tất ====="
           echo "Kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
