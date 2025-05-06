@@ -65,10 +65,8 @@ jobs:
       
       - name: Deploy to Encore Cloud using Git Integration
         run: |
-          # Thiết lập xác thực không tương tác
-          mkdir -p ~/.encore
-          echo "{\"auth\":{\"tokens\":[\"${{ secrets.ENCORE_AUTH_TOKEN }}\"]}}" > ~/.encore/config.json
-          chmod 600 ~/.encore/config.json
+          # Đăng nhập với API key và sử dụng tùy chọn -y để tự động chấp nhận
+          echo "${{ secrets.ENCORE_AUTH_TOKEN }}" | encore auth login --auth-key=- -y
           
           # Hiển thị phiên bản Encore
           encore version
@@ -77,9 +75,9 @@ jobs:
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
           echo "App ID: $APP_ID"
           
-          # Thực hiện link với app trên Encore Cloud (không tương tác)
+          # Thực hiện link với app trên Encore Cloud 
           echo "Linking app with Encore Cloud..."
-          encore app link $APP_ID --non-interactive || true
+          encore app link $APP_ID
           
           # Cấu hình Git remote cho Encore
           echo "Cấu hình Git remote cho Encore..."
@@ -101,13 +99,12 @@ jobs:
           echo "StrictHostKeyChecking no" > ~/.ssh/config
           chmod 600 ~/.ssh/config
           
-          # Thiết lập Git credential helper để sử dụng token
-          git config --global credential.helper store
-          echo "https://git.encore.dev:${{ secrets.ENCORE_AUTH_TOKEN }}@encore.dev" > ~/.git-credentials
-          chmod 600 ~/.git-credentials
+          # Kiểm tra trạng thái đăng nhập
+          echo "Kiểm tra trạng thái đăng nhập Encore:"
+          encore auth status
           
-          # Thiết lập biến môi trường cho Git SSH
-          export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+          # Thiết lập Git environment variables cho xác thực
+          export ENCORE_AUTH="${{ secrets.ENCORE_AUTH_TOKEN }}"
           
           # Đẩy code lên Encore
           echo "Đang triển khai lên Encore Cloud..."
@@ -117,3 +114,4 @@ jobs:
           echo "Kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
+          ENCORE_AUTH: ${{ secrets.ENCORE_AUTH_TOKEN }}
