@@ -43,15 +43,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      
       - name: Install Encore CLI
-        run: npm install -g encore.dev
+        run: |
+          curl -s https://encore.dev/install.sh | bash
+          echo "$HOME/.encore/bin" >> $GITHUB_PATH
       
       - name: Deploy to Encore Cloud
-        run: npx encore app deploy --api-key=${{ secrets.ENCORE_AUTH_TOKEN }}
+        run: encore auth login --api-key=${{ secrets.ENCORE_AUTH_TOKEN }} && encore app deploy
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
