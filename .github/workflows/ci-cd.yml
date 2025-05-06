@@ -59,7 +59,7 @@ jobs:
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
         run: |
-          # Thêm comment này để trigger GitHub Actions - $(date)
+          # Re-apply fix: Removed unsupported -y flag - $(date)
           
           # Báo cáo thông tin môi trường
           echo "=== Thông tin môi trường ==="
@@ -82,7 +82,7 @@ jobs:
           # === PHƯƠNG PHÁP 1: Sử dụng Encore deploy ===
           echo "=== Thử triển khai với Encore CLI ==="
           
-          # Xác thực với Encore (tùy chọn -y)
+          # Xác thực với Encore (đã loại bỏ cờ -y không được hỗ trợ)
           echo "$ENCORE_AUTH_TOKEN" | encore auth login --auth-key=- || echo "Xác thực không thành công, tiếp tục với phương pháp thay thế"
           
           # === PHƯƠNG PHÁP 2: Sử dụng Git Push ===
