@@ -56,7 +56,10 @@ jobs:
           # Hiển thị phiên bản Encore để debug
           encore version
           
-          # Sử dụng lệnh deploy cho App hiện tại
-          encore app push --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
+          # Xem trạng thái hiện tại của app
+          encore ls
+          
+          # Thử sử dụng lệnh dev deploy
+          encore dev deploy
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
