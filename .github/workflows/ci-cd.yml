@@ -65,8 +65,8 @@ jobs:
       
       - name: Deploy to Encore Cloud using Git Integration
         run: |
-          # Đăng nhập với API key và sử dụng tùy chọn -y để tự động chấp nhận
-          echo "${{ secrets.ENCORE_AUTH_TOKEN }}" | encore auth login --auth-key=- -y
+          # Đăng nhập với API key trực tiếp (không có flag -y)
+          encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
           
           # Hiển thị phiên bản Encore
           encore version
