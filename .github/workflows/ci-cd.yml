@@ -79,35 +79,24 @@ jobs:
           echo "Linking app with Encore Cloud..."
           encore app link $APP_ID
           
-          # Tạo file triển khai trực tiếp
-          echo "Tạo tệp tin triển khai..."
-          cat > encore-deploy.sh << 'EOF'
-          #!/bin/bash
-          set -e
-          
-          # Cấu hình Git
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          
+          # Sử dụng APP_ID trực tiếp mà không thông qua script
+          echo "Cấu hình Git remote cho Encore..."
           # Thiết lập remote encore nếu chưa có
-          if ! git remote | grep -q encore; then
-            echo "Thêm remote encore..."
-            git remote add encore encore://${APP_ID}.git || echo "Remote encore đã tồn tại hoặc không thể thêm"
-          fi
+          git remote remove encore || true
+          git remote add encore "encore://$APP_ID.git"
           
           # Hiển thị các remote
           echo "Danh sách remote:"
           git remote -v
           
-          # Thử đẩy code lên Encore
+          # Cấu hình SSH cho Encore
+          echo "Cấu hình SSH cho Encore..."
+          mkdir -p ~/.ssh
+          ssh-keyscan encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Đẩy code lên Encore
           echo "Đang triển khai lên Encore Cloud..."
-          git push encore HEAD:refs/heads/main --force
-          EOF
-          
-          chmod +x encore-deploy.sh
-          
-          # Chạy script triển khai
-          ./encore-deploy.sh
+          git push encore HEAD:refs/heads/main -f
           
           echo "===== Triển khai hoàn tất ====="
           echo "Hãy kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
