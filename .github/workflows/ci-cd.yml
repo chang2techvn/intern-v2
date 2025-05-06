@@ -63,7 +63,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Deploy to Encore Cloud
+      - name: Deploy to Encore Cloud using Git Integration
         run: |
           # Đăng nhập với API key
           encore auth login --auth-key=${{ secrets.ENCORE_AUTH_TOKEN }}
@@ -79,22 +79,37 @@ jobs:
           echo "Linking app with Encore Cloud..."
           encore app link $APP_ID
           
-          # Kiểm tra các lệnh có sẵn
-          echo "Available encore app commands:"
-          encore app --help
+          # Tạo file triển khai trực tiếp
+          echo "Tạo tệp tin triển khai..."
+          cat > encore-deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
           
-          # Sử dụng lệnh deploy theo đúng hướng dẫn trong CI_CD_SETUP.md
-          echo "===== Deploying to Encore Cloud ====="
-          # Thử với lệnh app deploy
-          echo "Attempting deployment with 'encore app deploy'..."
-          encore app deploy || echo "Command failed, trying alternate methods..."
+          # Cấu hình Git
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           
-          # Nếu lệnh trên thất bại, thử các phương pháp khác
-          echo "===== Verifying deployment status ====="
-          # Kiểm tra danh sách ứng dụng đã liên kết
-          echo "Listing linked apps:"
-          encore app list || echo "Command not available"
+          # Thiết lập remote encore nếu chưa có
+          if ! git remote | grep -q encore; then
+            echo "Thêm remote encore..."
+            git remote add encore encore://${APP_ID}.git || echo "Remote encore đã tồn tại hoặc không thể thêm"
+          fi
           
-          echo "Deployment process completed. Check status at https://app.encore.cloud/$APP_ID"
+          # Hiển thị các remote
+          echo "Danh sách remote:"
+          git remote -v
+          
+          # Thử đẩy code lên Encore
+          echo "Đang triển khai lên Encore Cloud..."
+          git push encore HEAD:refs/heads/main --force
+          EOF
+          
+          chmod +x encore-deploy.sh
+          
+          # Chạy script triển khai
+          ./encore-deploy.sh
+          
+          echo "===== Triển khai hoàn tất ====="
+          echo "Hãy kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
         env:
           ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
