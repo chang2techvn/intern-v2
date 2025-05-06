@@ -38,14 +38,17 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
-    env:
-      ENCORE_AUTH: ${{ secrets.ENCORE_AUTH_TOKEN }}
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      
+      - name: Install Encore CLI
+        run: |
+          curl -s https://encore.dev/install.sh | bash
+          echo "$HOME/.encore/bin" >> $GITHUB_PATH
       
       - name: Set up Git for Encore
         run: |
@@ -60,56 +63,99 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Create and deploy package to Encore Cloud
+      - name: Deploy to Encore Cloud via local Git deployment script
+        env:
+          ENCORE_AUTH_TOKEN: ${{ secrets.ENCORE_AUTH_TOKEN }}
         run: |
-          # Lấy App ID từ encore.app
+          # Create deployment directory
+          mkdir -p ~/encore-deploy
+          cd ~/encore-deploy
+          
+          # Clone repository afresh for deployment
+          echo "Cloning repository for deployment..."
+          git clone $GITHUB_WORKSPACE .
+          
+          # Extract app ID
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
           echo "App ID: $APP_ID"
           
-          # Chuẩn bị thư mục triển khai
-          DEPLOY_DIR=$(mktemp -d)
-          echo "Tạo thư mục tạm: $DEPLOY_DIR"
+          # Create an encoded token file for auth
+          echo "Configuring authentication..."
+          mkdir -p ~/.encore
+          echo "$ENCORE_AUTH_TOKEN" > ~/.encore/authtoken
+          chmod 600 ~/.encore/authtoken
           
-          # Sao chép toàn bộ code vào thư mục triển khai
-          cp -r . $DEPLOY_DIR
-          cd $DEPLOY_DIR
+          # Setup SSH known hosts
+          mkdir -p ~/.ssh
+          ssh-keyscan git.encore.dev >> ~/.ssh/known_hosts 2>/dev/null || true
           
-          # Tạo tệp tin zip để triển khai
-          DEPLOY_PACKAGE="encore_deployment.zip"
-          zip -r $DEPLOY_PACKAGE *
+          # Disable StrictHostKeyChecking for encore domains
+          cat > ~/.ssh/config << EOF
+          Host *.encore.dev git.encore.dev
+            StrictHostKeyChecking no
+            UserKnownHostsFile=/dev/null
+          EOF
+          chmod 600 ~/.ssh/config
           
-          # Gửi yêu cầu API để triển khai gói
-          echo "Gửi yêu cầu triển khai lên Encore Cloud..."
-          curl -X POST "https://api.encore.dev/v1/apps/${APP_ID}/deploy" \
-            -H "Authorization: Bearer ${{ secrets.ENCORE_AUTH_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "branch": "main",
-              "commit_message": "Deploy from GitHub Actions",
-              "deploy_mode": "automatic"
-            }'
+          # Create deploy script
+          cat > deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
           
-          # Kiểm tra kết quả curl
-          CURL_EXIT=$?
-          if [ $CURL_EXIT -ne 0 ]; then
-            echo "CURL failed with exit code $CURL_EXIT"
-            echo "Thử phương pháp thay thế..."
-            
-            # Sử dụng phương pháp webhook thay thế
-            WEBHOOK_URL="https://encore.dev/webhook/deploy/${{ secrets.ENCORE_AUTH_TOKEN }}/$APP_ID"
-            echo "Gửi webhook triển khai..."
-            curl -X POST "$WEBHOOK_URL" \
-              -d "branch=main&message=Deploy from GitHub Actions"
+          # Configure Git
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Get the app ID
+          APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
+          AUTH_TOKEN=$(cat ~/.encore/authtoken)
+          
+          # Set environment variable for git-remote-encore
+          export ENCORE_AUTH="$AUTH_TOKEN"
+          
+          # Configure Git credential helper
+          git config --global credential.helper store
+          echo "https://token:${AUTH_TOKEN}@git.encore.dev" > ~/.git-credentials
+          chmod 600 ~/.git-credentials
+          
+          # Enable verbose output for debugging
+          export GIT_TRACE=1
+          export GIT_CURL_VERBOSE=1
+          export GIT_SSH_COMMAND="ssh -v -o StrictHostKeyChecking=no"
+          
+          # Add Encore remote
+          git remote remove encore 2>/dev/null || true
+          git remote add encore "encore://${APP_ID}.git"
+          echo "Remote added:"
+          git remote -v
+          
+          # Push to Encore
+          echo "Pushing to Encore Cloud..."
+          git push -v encore HEAD:refs/heads/main -f
+          
+          # Check push result
+          if [ $? -eq 0 ]; then
+            echo "Successfully deployed to Encore Cloud!"
+          else
+            echo "Failed to deploy to Encore Cloud"
+            exit 1
           fi
+          EOF
           
-          echo "===== Triển khai hoàn tất ====="
-          echo "Kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
+          chmod +x deploy.sh
           
+          # Run the deployment script
+          echo "Executing deployment script..."
+          ./deploy.sh
+          
+          echo "===== Deployment process completed ====="
+          echo "Check deployment status at: https://app.encore.cloud/$APP_ID"
+      
       - name: Verify deployment status
         if: always()
         run: |
           APP_ID=$(cat encore.app | grep id | cut -d'"' -f4)
-          echo "Bạn có thể kiểm tra trạng thái triển khai tại: https://app.encore.cloud/$APP_ID"
-          echo "Nếu triển khai không thành công, bạn có thể thử:"
-          echo "1. Cập nhật ENCORE_AUTH_TOKEN trong GitHub Secrets"
-          echo "2. Thủ công triển khai từ terminal sử dụng phương pháp bạn đã thành công trước đây"
+          echo "You can check the deployment status at: https://app.encore.cloud/$APP_ID"
+          echo "If deployment was unsuccessful, you may need to:"
+          echo "1. Update your ENCORE_AUTH_TOKEN in GitHub Secrets"
+          echo "2. Manually deploy from your terminal using the method that worked previously"
