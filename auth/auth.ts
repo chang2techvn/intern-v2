@@ -4,7 +4,7 @@ export interface UserJwtPayload extends JwtPayload {
     sub: string;       // User ID
     workspace_id: string;  // Workspace ID
     scopes: string[];  // User permissions/scopes
-    roles: string[];   // User roles
+    roles?: string[];  // User roles
 }
 
 // This will be the structure that's available in the context
@@ -12,7 +12,7 @@ export interface AuthData {
     userID: string;
     workspaceID: string; 
     scopes: string[];
-    roles: string[];   // Thêm trường roles
+    roles: string[];   // Thêm roles vào AuthData
 }
 
 // Khai báo global context để lưu trữ dữ liệu xác thực
@@ -82,7 +82,7 @@ export function verifyJWTToken(token: string): AuthData | null {
             userID: decoded.sub,
             workspaceID: decoded.workspace_id,
             scopes: decoded.scopes || [],
-            roles: decoded.roles || [] // Đảm bảo trường roles được xử lý
+            roles: decoded.roles || [] // Thêm roles vào authData
         };
         
         return authData;
@@ -117,4 +117,31 @@ export function hasAllScopes(authData: AuthData | null | undefined, requiredScop
     }
     
     return requiredScopes.every(scope => authData.scopes.includes(scope));
+}
+
+// Helper function để kiểm tra nếu user có role được yêu cầu
+export function hasRole(authData: AuthData | null | undefined, requiredRole: string): boolean {
+    if (!authData || !authData.roles) {
+        return false;
+    }
+    
+    return authData.roles.includes(requiredRole);
+}
+
+// Helper to validate multiple roles (any of the roles)
+export function hasAnyRole(authData: AuthData | null | undefined, requiredRoles: string[]): boolean {
+    if (!authData || !authData.roles || requiredRoles.length === 0) {
+        return false;
+    }
+    
+    return requiredRoles.some(role => authData.roles.includes(role));
+}
+
+// Helper to validate all roles (must have all)
+export function hasAllRoles(authData: AuthData | null | undefined, requiredRoles: string[]): boolean {
+    if (!authData || !authData.roles || requiredRoles.length === 0) {
+        return false;
+    }
+    
+    return requiredRoles.every(role => authData.roles.includes(role));
 }

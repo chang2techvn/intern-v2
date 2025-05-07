@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 const generateToken = (
     userId: string = '12345',
     workspaceId: string | number = '1',
-    scopes: string[] = ['plans:read', 'plans:write', 'plans:delete', 'admin:access'],
+    scopes: string[] = ['plans:read', 'plans:write', 'plans:delete', 'admin:access', 'stats:read'],
     roles: string[] = [], // Thêm tham số roles với giá trị mặc định là mảng rỗng
     expiresIn: number = 60 * 60 // Default 1 hour expiration
 ) => {
@@ -158,7 +158,10 @@ const masterToken = generateToken(
         // Offer scopes
         'offers:read', 
         'offers:write', 
-        'offers:delete'
+        'offers:delete',
+
+        'stats:read',
+
     ],
     ['admin', 'retailer_admin', 'super_admin'],
     30 * 24 * 60 * 60 // 30 days expiration

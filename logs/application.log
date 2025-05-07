@@ -1,0 +1,236 @@
+2025-05-07T02:19:21.974Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:19:22.043Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:19:22.046Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:19:22.060Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:19:23.293Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:19:23.344Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:19:23.348Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:19:23.358Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:19:23.992Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:19:24.011Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:19:24.012Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:19:24.019Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:19:24.761Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:19:24.778Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:19:24.780Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:19:24.787Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:21:44.844Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:21:44.886Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:21:44.889Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:21:44.897Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:21:45.657Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:21:45.683Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:21:45.686Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:21:45.697Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:21:46.422Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:21:46.441Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:21:46.443Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:21:46.450Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:21:47.088Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:21:47.112Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:21:47.115Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:21:47.122Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:35:58.373Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:35:58.415Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:35:58.413Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:35:58.424Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:35:59.359Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:35:59.393Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:35:59.389Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:35:59.403Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:36:00.156Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:36:00.177Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:36:00.186Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:36:00.179Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:36:00.873Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:36:00.897Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:36:00.904Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:36:00.895Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:36:01.541Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:36:01.561Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:36:01.562Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:36:01.568Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:36:02.266Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:36:02.288Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:36:02.289Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:36:02.297Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:36:02.897Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:36:02.869Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:36:02.908Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:36:02.899Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:36:03.530Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:36:03.551Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:36:03.550Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:36:03.556Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:14.073Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:14.093Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:14.094Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:14.100Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:14.650Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:14.673Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:14.666Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:14.667Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:15.196Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:15.215Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:15.213Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:15.221Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:15.811Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:15.831Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:15.841Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:15.832Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:16.581Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:16.598Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:16.597Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:16.603Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:17.147Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:17.164Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:17.165Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:17.173Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:17.903Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:17.927Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:17.929Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:17.938Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:18.546Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:18.564Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:18.573Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:18.565Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:44.924Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:44.972Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:44.960Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:44.963Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:45.712Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:45.731Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:45.733Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:45.739Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:46.532Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:46.515Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:46.535Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:46.542Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:47.151Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:47.133Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:47.152Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:47.158Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:47.855Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:47.872Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:47.879Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:47.873Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:48.520Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:48.544Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:48.538Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:48.537Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:49.156Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:49.174Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:49.176Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:40:49.181Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:49.653Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:40:49.669Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:40:49.676Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:40:49.671Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:41:54.354Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:41:54.402Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:41:54.404Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:41:54.420Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:41:55.204Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:41:55.222Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:41:55.224Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:41:55.229Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:41:55.865Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:41:55.885Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:41:55.886Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:41:55.891Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T02:41:56.636Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T02:41:56.659Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T02:41:56.657Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T02:41:56.667Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:38.079Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:38.098Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:38.106Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:38.100Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:38.643Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:38.660Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:38.662Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:38.667Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:39.334Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:39.357Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:39.358Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:39.364Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:40.033Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:40.053Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:40.056Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:40.062Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:40.759Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:40.778Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:40.777Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:40.784Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:41.305Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:41.327Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:41.325Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:41.332Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:42.107Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:42.124Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:42.126Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:42.131Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:17:42.635Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:17:42.654Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:17:42.656Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:17:42.661Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:28.381Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:28.423Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:28.425Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:28.435Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:29.456Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:29.479Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:29.477Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:29.484Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:30.485Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:30.506Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:30.508Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:30.516Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:31.132Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:31.155Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:31.157Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:31.162Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:31.884Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:31.904Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:31.903Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:31.910Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:34.608Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:34.730Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:34.733Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:34.749Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:35.584Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:35.615Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:35.617Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:35.627Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:26:36.219Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:26:36.245Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:26:36.243Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:26:36.252Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:27:14.132Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:27:14.156Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:27:14.157Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:27:14.163Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:27:14.820Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:27:14.839Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:27:14.841Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:27:14.846Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:27:15.439Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:27:15.457Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:27:15.459Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:27:15.464Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:27:16.052Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:27:16.071Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:27:16.069Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:27:16.076Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:27:48.840Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:27:48.933Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:27:48.929Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:27:48.945Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:29:07.833Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:29:07.863Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:29:07.862Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:29:07.869Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
+2025-05-07T03:31:11.595Z [INFO] [otel-setup] Initializing OpenTelemetry {"nodeEnv":"development","tempoEndpoint":"http://localhost:4317"}
+2025-05-07T03:31:11.617Z [INFO] [otel-setup] OpenTelemetry SDK started successfully {}
+2025-05-07T03:31:11.619Z [INFO] [otel-setup] OpenTelemetry initialization complete {}
+2025-05-07T03:31:11.635Z [INFO] [otel-setup] Custom metrics endpoint available at http://localhost:9465/custom-metrics {}
