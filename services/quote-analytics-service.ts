@@ -573,11 +573,13 @@ export async function getQuoteStats(
                 avg_discount?: number; 
             }> = {};
             
-            productBreakdown.rows.forEach(row => {
+            productBreakdown.rows.forEach((row: { product: string; total: string; converted: string; avg_discount?: string }) => {
+                const totalNum = parseInt(row.total);
+                const convertedNum = parseInt(row.converted);
                 productBreakdownObj[row.product] = {
-                    total: parseInt(row.total),
-                    converted: parseInt(row.converted),
-                    rate: row.total > 0 ? (row.converted / row.total) * 100 : 0,
+                    total: totalNum,
+                    converted: convertedNum,
+                    rate: totalNum > 0 ? (convertedNum / totalNum) * 100 : 0,
                     avg_discount: row.avg_discount ? parseFloat(row.avg_discount) : undefined
                 };
             });
@@ -589,11 +591,13 @@ export async function getQuoteStats(
                 rate: number; 
             }> = {};
             
-            sourceBreakdown.rows.forEach(row => {
+            sourceBreakdown.rows.forEach((row: { source: string; total: string; converted: string }) => {
+                const totalNum = parseInt(row.total);
+                const convertedNum = parseInt(row.converted);
                 sourceBreakdownObj[row.source || 'direct'] = {
-                    total: parseInt(row.total),
-                    converted: parseInt(row.converted),
-                    rate: row.total > 0 ? (row.converted / row.total) * 100 : 0
+                    total: totalNum,
+                    converted: convertedNum,
+                    rate: totalNum > 0 ? (convertedNum / totalNum) * 100 : 0
                 };
             });
             
@@ -604,11 +608,13 @@ export async function getQuoteStats(
                 rate: number; 
             }> = {};
             
-            dateBreakdown.rows.forEach(row => {
+            dateBreakdown.rows.forEach((row: { date: string; total: string; converted: string }) => {
+                const totalNum = parseInt(row.total);
+                const convertedNum = parseInt(row.converted);
                 dateBreakdownObj[row.date] = {
-                    total: parseInt(row.total),
-                    converted: parseInt(row.converted),
-                    rate: row.total > 0 ? (row.converted / row.total) * 100 : 0
+                    total: totalNum,
+                    converted: convertedNum,
+                    rate: totalNum > 0 ? (convertedNum / totalNum) * 100 : 0
                 };
             });
             
@@ -619,11 +625,13 @@ export async function getQuoteStats(
                 rate: number; 
             }> = {};
             
-            monthBreakdown.rows.forEach(row => {
+            monthBreakdown.rows.forEach((row: { month: string; total: string; converted: string }) => {
+                const totalNum = parseInt(row.total);
+                const convertedNum = parseInt(row.converted);
                 monthBreakdownObj[row.month] = {
-                    total: parseInt(row.total),
-                    converted: parseInt(row.converted),
-                    rate: row.total > 0 ? (row.converted / row.total) * 100 : 0
+                    total: totalNum,
+                    converted: convertedNum,
+                    rate: totalNum > 0 ? (convertedNum / totalNum) * 100 : 0
                 };
             });
             

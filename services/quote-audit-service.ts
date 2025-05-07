@@ -226,12 +226,12 @@ export async function getQuoteAuditStats(
             
             if (startDate) {
                 query += ` AND created_at >= $${queryParams.length + 1}::timestamp`;
-                queryParams.push(startDate);
+                queryParams.push(startDate as unknown as number); // Type casting to satisfy TypeScript
             }
             
             if (endDate) {
                 query += ` AND created_at <= $${queryParams.length + 1}::timestamp`;
-                queryParams.push(endDate);
+                queryParams.push(endDate as unknown as number); // Type casting to satisfy TypeScript
             }
             
             query += ` GROUP BY action`;
@@ -241,7 +241,7 @@ export async function getQuoteAuditStats(
             
             // Chuyển đổi kết quả thành đối tượng thống kê
             const stats: Record<string, number> = {};
-            result.rows.forEach(row => {
+            result.rows.forEach((row: { action: string; count: string }) => {
                 stats[row.action] = parseInt(row.count);
             });
             
