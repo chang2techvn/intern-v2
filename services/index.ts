@@ -52,5 +52,14 @@ export type {
   QuoteAudit
 } from './quote-audit-service';
 
+// Re-export từ file insight-service.ts
+export {
+  listInsights,
+  getInsightById,
+  createInsight,
+  updateInsight,
+  deleteInsight
+} from './insight-service';
+
 // Re-export từ file plan-service.ts nếu có
 // export các functions từ plan-service.ts nếu có

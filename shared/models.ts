@@ -54,3 +54,29 @@ export interface Offer {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface Insight {
+    id: number;
+    title: string;
+    content: string;
+    category?: string;
+    source?: string;
+    relevance?: number;
+    status: string;
+    metadata?: Record<string, any>;
+    created_by: string;
+    workspace_id: number;
+    created_at: Date;
+    updated_at: Date;
+}
+
+export interface AuditLog {
+    id: number;
+    entity_type: string;
+    entity_id?: number;
+    action: string;
+    user_id: string;
+    workspace_id: number;
+    details?: Record<string, any>;
+    created_at: Date;
+}

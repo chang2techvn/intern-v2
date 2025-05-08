@@ -33,6 +33,30 @@ export interface LeadEventPayload {
   };
 }
 
+// Định nghĩa các loại sự kiện Insight
+export enum InsightEventType {
+  NEW = "Insight.New",
+  UPDATED = "Insight.Updated",
+  DELETED = "Insight.Deleted"
+}
+
+// Định nghĩa interface cho Insight event payload
+export interface InsightEventPayload {
+  eventType: InsightEventType;
+  timestamp: string;
+  insight: {
+    id: number;
+    title: string;
+    category?: string;
+    workspace_id: number;
+    created_by: string;
+  };
+  metadata: {
+    userID: string;
+    workspaceID: string;
+  };
+}
+
 // Định nghĩa SNS Topic cho Lead events
 // Sử dụng public API của encore.dev cho pub/sub
 export const LeadEvents = {
@@ -54,3 +78,17 @@ export const LeadEvents = {
     return true;
   }
 };
+
+// Generic function to publish any SNS event
+export async function publishSNSEvent(eventType: string, payload: any): Promise<boolean> {
+  console.log(`\n=== [SNS] PUBLISHING EVENT: ${eventType} ===`);
+  console.log(`[SNS] Event payload:`);
+  console.log(JSON.stringify(payload, null, 2));
+  
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  console.log(`[SNS] Successfully published event ${eventType}`);
+  console.log(`=== [SNS] EVENT PUBLISHING COMPLETE ===\n`);
+  return true;
+}
